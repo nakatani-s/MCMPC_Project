@@ -131,7 +131,7 @@ void MCMPC_Controller(float *state, float *input, ControllerInfo &info_cont , Sp
             case 1:
                 TOP1_sample_method(hst, gpu_info, InpSeq);
         }
-        printf("Values From Function: %f CostFrom: %f\n", hst[10].u[0][10], hst[10].L);
+        printf("Values From Function: %f CostFrom: %f  TOP_Input: %f\n", hst[10].u[0][0], hst[10].L, InpSeq[0].u[0]);
     }
     //hst[10].u[0][10] = 1.0;
     //printf("Values From Function: %f %f\n", hst[10].u[0][10], variance[0]);
