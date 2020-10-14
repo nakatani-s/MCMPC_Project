@@ -31,6 +31,7 @@ int main(int argc, char **argv){
     Input_Seq = (InputSequences*)malloc(DIM_U * sizeof(InputSequences));
     Initialize(State, Input, Diff_State, get_info, get_param, host_, Input_Seq);
     cudaMemcpy(device_, host_, NUM_OF_BLOCKS*sizeof(DataMessanger),cudaMemcpyHostToDevice);
+    get_param.NUM_CYCLES = 0;
     printf("hoge\n");
 
     switch(WITH_TERMINAL_COST){
@@ -48,8 +49,10 @@ int main(int argc, char **argv){
     printf("|--------Start Simulation Loop--------|");
     printf("InitValues : %f\n",host_[10].u[1][10]);
     for(int i = 0; i < 5; i++){
-        get_param.NUM_CYCLES = i;
+        
         MCMPC_Controller(State, Input, _controller, get_info, get_param, host_, device_, Input_Seq, seedMaker);
-        printf("ValuesFromMain : %f\n",host_[10].u[0][10]);
+        cudaMemcpy(host_, device_, NUM_OF_BLOCKS*sizeof(DataMessanger),cudaMemcpyDeviceToHost);
+        printf("InputFromMain : %f CostFromMain: %f\n",host_[0].u[0][1],host_[0].L);
+        get_param.NUM_CYCLES = i;
     }
 }
