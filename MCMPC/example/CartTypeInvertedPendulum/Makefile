@@ -67,7 +67,7 @@ OBJS = \
 $(OBJ_DIR)/Initializer.o  $(OBJ_DIR)/MCMPC_Controller.o \
 $(OBJ_DIR)/cooling_method.o $(OBJ_DIR)/generate_random_input.o \
 $(OBJ_DIR)/integrator.o $(OBJ_DIR)/Generic_function.o\
-$(OBJ_DIR)/constraint.o \
+$(OBJ_DIR)/constraint.o $(OBJ_DIR)/MonteCarloMethod.o \
 $(OBJ_HERE)/MyFunctions.o $(OBJ_HERE)/Mymain.o
 
 ##########################################################

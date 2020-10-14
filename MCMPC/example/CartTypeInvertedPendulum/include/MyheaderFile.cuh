@@ -17,6 +17,7 @@ const float CONTROL_CYCLE = 0.01;
 const float INITIAL_SIGMA[DIM_U] = { 1.0f };
 const float Clambda  = 100; // We recommend a constant multiple of horizon
 
+#define PREDICTIVE_METHOD 1 // <-----choose 1 or 2 as Predictive method (1 -> TOP1_sample, 2 -> Elite sample )
 #define COOLING_PATTERN 1 //<---- choose cooling pattern ( 1-> geometric_cooling, 2 -> hyperbolic_cooling )
 const float RATE_OF_COOLING[DIM_U] = { 0.95f };
 

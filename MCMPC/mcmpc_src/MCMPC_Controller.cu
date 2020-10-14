@@ -126,6 +126,11 @@ void MCMPC_Controller(float *state, float *input, ControllerInfo &info_cont , Sp
         cudaMemcpyToSymbol(st_dev, &variance, DIM_U*sizeof(float));
         MCMPC_GPU<<<gpu_info.NUM_BLOCKS,gpu_info.TH_PER_BLS>>>(h_state, gpu_info, se, dvc, variance, InpSeq);
         cudaMemcpy(hst, dvc, gpu_info.NUM_BLOCKS * sizeof(DataMessanger),cudaMemcpyDeviceToHost); //ここでコピーしても記述されない
+
+        switch(PREDICTIVE_METHOD){
+            case 1:
+                TOP1_sample_method(hst, gpu_info, InpSeq);
+        }
         printf("Values From Function: %f CostFrom: %f\n", hst[10].u[0][10], hst[10].L);
     }
     //hst[10].u[0][10] = 1.0;

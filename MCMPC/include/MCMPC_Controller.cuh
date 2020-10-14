@@ -9,6 +9,7 @@
 //#include "Initializer.cuh"
 #include "generate_random_input.cuh"
 #include "cooling_method.cuh"
+#include "MonteCarloMethod.cuh"
 
 #ifndef MCMPC_CONTROLLER_CUH
 #define MCMPC_CONTROLLER_CUH
