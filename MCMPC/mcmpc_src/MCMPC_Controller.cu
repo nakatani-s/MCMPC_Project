@@ -45,8 +45,9 @@ __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, 
     general_copy(Dev_State, h_state, DIM_X);
     for(int i = 0; i < NUM_OF_HORIZON; i++){
         for(int k = 0; k < DIM_U; k++){
-            U_dev[k][i] = generate_u1(id, devSt, dvc[blockIdx.x].u[k][i], st_dev[k]); //入力を生成する関数はここ（同じファイル）に記述しないと機能しない
             Input_here[k] = generate_u1(id, devSt, InpSeq[k].u[i], st_dev[k]);
+            Input_here[k] = input_saturation(Input_here[k], input_constraint, k);
+            U_dev[k][i] = Input_here[k]; //入力を生成する関数はここ（同じファイル）に記述しないと機能しない
         }
         // update predictive model by using random input
     
@@ -89,6 +90,7 @@ void MCMPC_Controller(float *state, float *input, ControllerInfo &info_cont , Sp
         cudaMemcpyToSymbol(d_R, &R, DIM_R * sizeof(float));
         cudaMemcpyToSymbol(d_param, &system_params, NUM_OF_SYS_PARAMETERS * sizeof(float));
         cudaMemcpyToSymbol(output_constraint, &constraint_for_state, NUM_OF_S_CONSTRAINT * sizeof(float));
+        cudaMemcpyToSymbol(input_constraint, &constraint_for_input, NUM_OF_I_CONSTRAINT * sizeof(float));
     }
     cudaEvent_t start, stop;
     cudaEventCreate(&start);
@@ -130,6 +132,12 @@ void MCMPC_Controller(float *state, float *input, ControllerInfo &info_cont , Sp
         switch(PREDICTIVE_METHOD){
             case 1:
                 TOP1_sample_method(hst, gpu_info, InpSeq);
+                break;
+            case 2:
+                TOP1_sample_method(hst, gpu_info, InpSeq);
+                break;
+            default:
+                printf("The value of <PREDICTIVE_METHOD> in headerfile you created is invalid\n");
         }
         printf("Values From Function: %f CostFrom: %f  TOP_Input: %f\n", hst[10].u[0][0], hst[10].L, InpSeq[0].u[0]);
     }
