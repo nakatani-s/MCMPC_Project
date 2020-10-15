@@ -52,7 +52,7 @@ __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, 
         // update predictive model by using random input
     
         get_current_diff_state(Dev_State, Input_here, d_param, dev_Diff_State);
-        //printf("%f %f %f\n", Dev_State[0], Input_here[0],d_param[0]);
+        printf("ID: %d Mean: %f Input: %f\n", id, InpSeq[0].u[0], Input_here[0]);
         euler_integrator_in_thread(Dev_State, dev_Diff_State, gpu_info.RATE_OF_CYCLE);
         Cost += get_stage_cost(Dev_State ,dev_Diff_State, Input_here, d_Q, d_R, output_constraint);
     }

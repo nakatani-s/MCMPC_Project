@@ -52,11 +52,11 @@ int main(int argc, char **argv){
     
     printf("|--------Start Simulation Loop--------|");
     printf("InitValues : %f\n",host_[10].u[1][10]);
-    for(int i = 0; i < 500; i++){
+    for(int i = 0; i < 10; i++){
         
         MCMPC_Controller(State, _controller, get_info, get_param, host_, device_, Input_Seq, seedMaker);
         cudaMemcpy(host_, device_, NUM_OF_BLOCKS*sizeof(DataMessanger),cudaMemcpyDeviceToHost);
-        printf("InputFromMain : %f CostFromMain: %f Theta: %f x: %f dx: %f dth: %f\n",Input_Seq[0].u[0] ,host_[0].L, State[1], State[0], State[2], State[3]);
+        //printf("InputFromMain : %f CostFromMain: %f Theta: %f x: %f dx: %f dth: %f\n",Input_Seq[0].u[0] ,host_[0].L, State[1], State[0], State[2], State[3]);
         get_param.NUM_CYCLES = i;
         copy_current_input(Input, Input_Seq);
         Runge_kutta_45_for_Secondary_system(State, Input, in_h_param, get_info.RATE_OF_CYCLE);
