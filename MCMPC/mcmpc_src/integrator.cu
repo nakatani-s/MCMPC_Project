@@ -19,21 +19,21 @@ __host__ __device__ void Runge_kutta_45_for_Secondary_system(float *state, float
     get_current_diff_state(state, input, param, diff_state);
     simple_integrator(diff_state, c_sec, yp_1);
     for(int i = 0; i < DIM_X; i++){
-        next_state[i] = state[i] + yp_1[i] * (c_sec / 2);
+        next_state[i] = state[i] + yp_1[i] / 2;
     }
 
     float yp_2[DIM_X];
     get_current_diff_state(next_state, input, param, diff_state);
     simple_integrator(diff_state, c_sec, yp_2);
     for(int i = 0; i < DIM_X; i++){
-        next_state[i] = state[i] + yp_2[i] * (c_sec / 2);
+        next_state[i] = state[i] + yp_2[i] / 2;
     }
 
     float yp_3[DIM_X];
     get_current_diff_state(next_state, input, param, diff_state);
     simple_integrator(diff_state, c_sec, yp_3);
     for(int i = 0; i < DIM_X; i++){
-        next_state[i] = state[i] + yp_3[i] * c_sec;
+        next_state[i] = state[i] + yp_3[i];
     }
 
     float yp_4[DIM_X];
