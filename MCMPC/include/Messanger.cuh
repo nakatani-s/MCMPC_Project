@@ -5,6 +5,7 @@
 #ifndef MESSANGER_CUH
 #define MESSANGER_CUH
 typedef struct{
+    int Best_ID;
     float L;
     float W;
     float IT_L;

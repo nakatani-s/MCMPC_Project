@@ -23,5 +23,6 @@ void copy_input_sequences(DataMessanger *hst, InputSequences *InpSeq, SpecGPU in
 void TOP1_sample_method(DataMessanger *hst,SpecGPU gpu_info, InputSequences *InpSeq){
     int bestID;
     bestID = search_best_ID( hst, gpu_info);
+    hst[0].Best_ID = bestID;
     copy_input_sequences(hst, InpSeq, gpu_info, bestID);
 }
