@@ -24,3 +24,11 @@ void copy_current_input(float *Input, InputSequences *inp_from_host){
     }
 
 }
+
+void Shift_Input_Sequences(InputSequences *inp_from_host){
+    for(int i = 0; i < NUM_OF_HORIZON - 1; i++){
+        for(int k = 0; k < DIM_U; k++){
+            inp_from_host[k].u[i] = inp_from_host[k].u[i+1];
+        }
+    }
+}

@@ -60,5 +60,6 @@ int main(int argc, char **argv){
         get_param.NUM_CYCLES = i;
         copy_current_input(Input, Input_Seq);
         Runge_kutta_45_for_Secondary_system(State, Input, in_h_param, get_info.RATE_OF_CYCLE);
+        Shift_Input_Sequences(Input_Seq);
     }
 }
