@@ -5,7 +5,7 @@ __device__ void euler_integrator_in_thread(float *state, float *diff_state, floa
     // Update state with Euler integral in threads
     //int N_ = sizeof state / sizeof *state;
     for(int i = 0; i < DIM_X; i++){
-        state[i] += diff_state[i] * control_cycle;
+        state[i] = state[i] + diff_state[i] * control_cycle;
     }
 }
 
@@ -41,7 +41,7 @@ __host__ __device__ void Runge_kutta_45_for_Secondary_system(float *state, float
     simple_integrator(diff_state, c_sec, yp_4);
 
     for(int i = 0; i < DIM_X; i++){
-        state[i] += (yp_1[i] + 2*yp_2[i] + 2*yp_3[i] + yp_4[i]) / 6;
+        state[i] = state[i] + (yp_1[i] + 2*yp_2[i] + 2*yp_3[i] + yp_4[i]) / 6;
     }
 
 }
