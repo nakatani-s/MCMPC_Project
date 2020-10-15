@@ -52,7 +52,9 @@ __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, 
         // update predictive model by using random input
     
         get_current_diff_state(Dev_State, Input_here, d_param, dev_Diff_State);
-        printf("ID: %d Mean: %f Input: %f\n", id, InpSeq[0].u[0], Input_here[0]);
+        if(id = 100){
+            printf("ID: %d Mean: %f Input: %f\n", id, InpSeq[0].u[0], Input_here[0]);
+        }
         euler_integrator_in_thread(Dev_State, dev_Diff_State, gpu_info.RATE_OF_CYCLE);
         Cost += get_stage_cost(Dev_State ,dev_Diff_State, Input_here, d_Q, d_R, output_constraint);
     }
@@ -124,7 +126,7 @@ void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info
                 break;
                 
         }
-        cudaMemcpy(device_InpSeq, &InpSeq, DIM_U * sizeof(InputSequences), cudaMemcpyHostToDevice);
+        cudaMemcpyToSymbol(device_InpSeq, &InpSeq, DIM_U * sizeof(InputSequences));
         cudaMemcpyToSymbol(st_dev, &variance, DIM_U*sizeof(float));
         MCMPC_GPU<<<gpu_info.NUM_BLOCKS,gpu_info.TH_PER_BLS>>>(h_state, gpu_info, se, dvc, variance, device_InpSeq);
         cudaMemcpy(hst, dvc, gpu_info.NUM_BLOCKS * sizeof(DataMessanger),cudaMemcpyDeviceToHost); //ここでコピーしても記述されない
