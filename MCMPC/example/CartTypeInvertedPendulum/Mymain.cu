@@ -33,6 +33,8 @@ int main(int argc, char **argv){
     cudaMemcpy(device_, host_, NUM_OF_BLOCKS*sizeof(DataMessanger),cudaMemcpyHostToDevice);
     get_param.NUM_CYCLES = 0;
     printf("hoge\n");
+    InputSequences *device_InpSeq;
+    cudaMalloc((void**)&device_InpSeq, DIM_U * sizeof(InputSequences));
     float in_h_param[NUM_OF_SYS_PARAMETERS];
     for( int i = 0; i < NUM_OF_SYS_PARAMETERS; i++){
         in_h_param[i] = system_params[i];
@@ -54,7 +56,7 @@ int main(int argc, char **argv){
     printf("InitValues : %f\n",host_[10].u[1][10]);
     for(int i = 0; i < 200; i++){
         
-        MCMPC_Controller(State, _controller, get_info, get_param, host_, device_, Input_Seq, seedMaker);
+        MCMPC_Controller(State, _controller, get_info, get_param, host_, device_, Input_Seq, seedMaker, device_InpSeq);
         cudaMemcpy(host_, device_, NUM_OF_BLOCKS*sizeof(DataMessanger),cudaMemcpyDeviceToHost);
         //printf("InputFromMain : %f CostFromMain: %f Theta: %f x: %f dx: %f dth: %f\n",Input_Seq[0].u[0] ,host_[0].L, State[1], State[0], State[2], State[3]);
         get_param.NUM_CYCLES = i;

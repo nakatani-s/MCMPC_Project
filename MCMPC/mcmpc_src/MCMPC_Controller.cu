@@ -84,7 +84,7 @@ __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, 
     }
 } 
 
-void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info, ControllerParams param, DataMessanger *hst, DataMessanger *dvc, InputSequences *InpSeq, curandState *se){
+void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info, ControllerParams param, DataMessanger *hst, DataMessanger *dvc, InputSequences *InpSeq, curandState *se, InputSequences *device_InpSeq){
     if(param.NUM_CYCLES == 0){
         cudaMemcpyToSymbol(d_Q, &Q, DIM_Q * sizeof(float));
         cudaMemcpyToSymbol(d_R, &R, DIM_R * sizeof(float));
@@ -95,9 +95,9 @@ void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info
     cudaEvent_t start, stop;
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
-    InputSequences *device_InpSeq;
+    // InputSequences *device_InpSeq;
     float *h_state;
-    cudaMalloc((void**)&device_InpSeq, DIM_U * sizeof(InputSequences));
+    // cudaMalloc((void**)&device_InpSeq, DIM_U * sizeof(InputSequences));
     cudaMalloc(&h_state,DIM_X * sizeof(float));
     cudaMemcpy(h_state, state, DIM_X*sizeof(float), cudaMemcpyHostToDevice); //状態量をデバイスで使用する変数にコピー
     
