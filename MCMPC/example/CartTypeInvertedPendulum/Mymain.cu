@@ -33,6 +33,10 @@ int main(int argc, char **argv){
     cudaMemcpy(device_, host_, NUM_OF_BLOCKS*sizeof(DataMessanger),cudaMemcpyHostToDevice);
     get_param.NUM_CYCLES = 0;
     printf("hoge\n");
+    float in_h_param[NUM_OF_SYS_PARAMETERS];
+    for( int i = 0; i < NUM_OF_SYS_PARAMETERS; i++){
+        in_h_param[i] = system_params[i];
+    }
 
     switch(WITH_TERMINAL_COST){
         case 1:
@@ -50,9 +54,11 @@ int main(int argc, char **argv){
     printf("InitValues : %f\n",host_[10].u[1][10]);
     for(int i = 0; i < 5; i++){
         
-        MCMPC_Controller(State, Input, _controller, get_info, get_param, host_, device_, Input_Seq, seedMaker);
+        MCMPC_Controller(State, _controller, get_info, get_param, host_, device_, Input_Seq, seedMaker);
         cudaMemcpy(host_, device_, NUM_OF_BLOCKS*sizeof(DataMessanger),cudaMemcpyDeviceToHost);
-        printf("InputFromMain : %f CostFromMain: %f\n",host_[0].u[0][1],host_[0].L);
+        printf("InputFromMain : %f CostFromMain: %f Theta: %f\n",host_[0].u[0][1],host_[0].L, State[1]);
         get_param.NUM_CYCLES = i;
+        copy_current_input(Input, Input_Seq);
+        Runge_kutta_45_for_Secondary_system(State, Input, in_h_param, get_info.RATE_OF_CYCLE);
     }
 }

@@ -17,3 +17,10 @@ __device__ float input_saturation(float in, float *constraint, int k){
         }
         return ret;
 }
+
+void copy_current_input(float *Input, InputSequences *inp_from_host){
+    for(int i = 0; i < DIM_U; i++){
+        Input[i] = inp_from_host[i].u[0];
+    }
+
+}

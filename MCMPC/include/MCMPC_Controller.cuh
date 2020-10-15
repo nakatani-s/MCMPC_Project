@@ -28,6 +28,6 @@ void set_GPU_constant_values(const float *q, const float *r, const float *sys_pr
 
 void set_GPU_constant_values_2(const float *q, const float *r, const float *qf, const float *rf, const float *sys_pr, const float *inp_cntrnt, const float *st_cntrnt);
 
-void MCMPC_Controller(float *state, float *input, ControllerInfo &info_cont , SpecGPU gpu_info, ControllerParams param, DataMessanger *hst, DataMessanger *device, InputSequences *InpSeq, curandState *se);
+void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info, ControllerParams param, DataMessanger *hst, DataMessanger *device, InputSequences *InpSeq, curandState *se);
 
 #endif

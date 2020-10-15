@@ -84,7 +84,7 @@ __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, 
     }
 } 
 
-void MCMPC_Controller(float *state, float *input, ControllerInfo &info_cont , SpecGPU gpu_info, ControllerParams param, DataMessanger *hst, DataMessanger *dvc, InputSequences *InpSeq, curandState *se){
+void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info, ControllerParams param, DataMessanger *hst, DataMessanger *dvc, InputSequences *InpSeq, curandState *se){
     if(param.NUM_CYCLES == 0){
         cudaMemcpyToSymbol(d_Q, &Q, DIM_Q * sizeof(float));
         cudaMemcpyToSymbol(d_R, &R, DIM_R * sizeof(float));
@@ -103,7 +103,7 @@ void MCMPC_Controller(float *state, float *input, ControllerInfo &info_cont , Sp
     
     float variance[DIM_U];
     //variance = (float*)malloc(DIM_U * sizeof(float));
-    printf("Function: %f\n", hst[10].u[0][10]);
+    //printf("Function: %f\n", hst[10].u[0][10]);
     /* Iterate Predction Process */
     for(int i = 0; i < gpu_info.ITERATIONS; i++){
         switch(COOLING_PATTERN){
@@ -127,7 +127,7 @@ void MCMPC_Controller(float *state, float *input, ControllerInfo &info_cont , Sp
         cudaMemcpy(device_InpSeq, InpSeq, DIM_U * sizeof(InputSequences), cudaMemcpyHostToDevice);
         cudaMemcpyToSymbol(st_dev, &variance, DIM_U*sizeof(float));
         MCMPC_GPU<<<gpu_info.NUM_BLOCKS,gpu_info.TH_PER_BLS>>>(h_state, gpu_info, se, dvc, variance, device_InpSeq);
-        cudaMemcpy(hst, dvc, gpu_info.NUM_BLOCKS * sizeof(DataMessanger),cudaMemcpyDeviceToHost); //ここでコピーしても記述されない
+        //cudaMemcpy(hst, dvc, gpu_info.NUM_BLOCKS * sizeof(DataMessanger),cudaMemcpyDeviceToHost); //ここでコピーしても記述されない
 
         switch(PREDICTIVE_METHOD){
             case 1:
@@ -138,8 +138,9 @@ void MCMPC_Controller(float *state, float *input, ControllerInfo &info_cont , Sp
                 break;
             default:
                 printf("The value of <PREDICTIVE_METHOD> in headerfile you created is invalid\n");
+                break;
         }
-        printf("Values From Function: %f CostFrom: %f  TOP_Input: %f\n", hst[10].u[0][0], hst[10].L, InpSeq[0].u[0]);
+        //printf("Values From Function: %f CostFrom: %f  TOP_Input: %f\n", hst[10].u[0][0], hst[10].L, InpSeq[0].u[0]);
     }
     //hst[10].u[0][10] = 1.0;
     //printf("Values From Function: %f %f\n", hst[10].u[0][10], variance[0]);
