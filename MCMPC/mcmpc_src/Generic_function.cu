@@ -12,7 +12,7 @@ __device__ float input_saturation(float in, float *constraint, int k){
         if( in <= constraint[k * DIM_U]){
             ret = constraint[k * DIM_U];
         }
-        if( constraint[k * DIM_U + 1]){
+        if( constraint[k * DIM_U + 1] <= in){
             ret = constraint[k * DIM_U +1];
         }
         return ret;
