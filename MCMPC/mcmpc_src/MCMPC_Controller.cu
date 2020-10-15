@@ -97,7 +97,7 @@ void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info
     cudaEventCreate(&stop);
     InputSequences *device_InpSeq;
     float *h_state;
-    cudaMalloc(&device_InpSeq, DIM_U * sizeof(InputSequences));
+    cudaMalloc((void**)&device_InpSeq, DIM_U * sizeof(InputSequences));
     cudaMalloc(&h_state,DIM_X * sizeof(float));
     cudaMemcpy(h_state, state, DIM_X*sizeof(float), cudaMemcpyHostToDevice); //状態量をデバイスで使用する変数にコピー
     
