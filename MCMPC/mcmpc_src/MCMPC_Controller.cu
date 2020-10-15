@@ -143,5 +143,5 @@ void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info
         //printf("Values From Function: %f CostFrom: %f  TOP_Input: %f\n", hst[10].u[0][0], hst[10].L, InpSeq[0].u[0]);
     }
     //hst[10].u[0][10] = 1.0;
-    //printf("Values From Function: %f %f\n", hst[10].u[0][10], variance[0]);
+    printf("Values From Function: %f %f\n", InpSeq[0].u[0], variance[0]);
 }
