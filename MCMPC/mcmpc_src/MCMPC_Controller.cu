@@ -45,7 +45,7 @@ __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, 
     general_copy(Dev_State, h_state, DIM_X);
     for(int i = 0; i < NUM_OF_HORIZON; i++){
         for(int k = 0; k < DIM_U; k++){
-            Input_here[k] = generate_u1(id, devSt, dvc[blockIdx.x].u[k][i], st_dev[k]);
+            Input_here[k] = generate_u1(id, devSt, InpSeq[k].u[i], st_dev[k]);
             Input_here[k] = input_saturation(Input_here[k], input_constraint, k);
             U_dev[k][i] = Input_here[k]; //入力を生成する関数はここ（同じファイル）に記述しないと機能しない
         }
@@ -78,7 +78,7 @@ __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, 
                 dvc[blockIdx.x].u[k][i] = U_dev[k][i];
             }
         }
-	//printf("ID: %d Value: %f\n", id, U_dev[0][10]);
+	printf("ID: %d Value: %f Mean: %f\n", id, U_dev[NO1][0], InpSeq[0].u[0]);
         //dvc[blockIdx.x] = in_block;
     }
 } 
@@ -142,5 +142,5 @@ void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info
         //printf("Values From Function: %f CostFrom: %f  TOP_Input: %f\n", hst[10].u[0][0], hst[10].L, InpSeq[0].u[0]);
     }
     //hst[10].u[0][10] = 1.0;
-    printf("Values From Function: %f\n", InpSeq[0].u[0]);
+    //printf("Values From Function: %f\n", InpSeq[0].u[0]);
 }
