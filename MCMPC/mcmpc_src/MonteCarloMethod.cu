@@ -1,5 +1,6 @@
 /*-- 
 --*/
+#include <stdio.h>
 #include "../include/MonteCarloMethod.cuh"
 
 int search_best_ID(DataMessanger *hst, SpecGPU info){
@@ -25,4 +26,5 @@ void TOP1_sample_method(DataMessanger *hst,SpecGPU gpu_info, InputSequences *Inp
     bestID = search_best_ID( hst, gpu_info);
     hst[0].Best_ID = bestID;
     copy_input_sequences(hst, InpSeq, gpu_info, bestID);
+    printf("ID:%d Value:%f", bestID, hst[bestID].u[0][0]);
 }
