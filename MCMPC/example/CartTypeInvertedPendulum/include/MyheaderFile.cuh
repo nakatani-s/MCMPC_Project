@@ -11,7 +11,7 @@ const int NUM_OF_BLOCKS     = 100;
 //#define NUM_OF_BLOCKS 100
 const int NUM_OF_THREAD_PER_BLOCKS = 100;
 const int NUM_OF_HORIZON           = 100;
-const int NUM_OF_ITERATIONS        = 5;
+const int NUM_OF_ITERATIONS        = 10;
 
 const float CONTROL_CYCLE = 0.01;
 const float INITIAL_SIGMA[DIM_U] = { 1.0f };
