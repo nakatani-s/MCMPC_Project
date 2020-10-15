@@ -127,7 +127,7 @@ void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info
         cudaMemcpy(device_InpSeq, &InpSeq, DIM_U * sizeof(InputSequences), cudaMemcpyHostToDevice);
         cudaMemcpyToSymbol(st_dev, &variance, DIM_U*sizeof(float));
         MCMPC_GPU<<<gpu_info.NUM_BLOCKS,gpu_info.TH_PER_BLS>>>(h_state, gpu_info, se, dvc, variance, device_InpSeq);
-        //cudaMemcpy(hst, dvc, gpu_info.NUM_BLOCKS * sizeof(DataMessanger),cudaMemcpyDeviceToHost); //ここでコピーしても記述されない
+        cudaMemcpy(hst, dvc, gpu_info.NUM_BLOCKS * sizeof(DataMessanger),cudaMemcpyDeviceToHost); //ここでコピーしても記述されない
 
         switch(PREDICTIVE_METHOD){
             case 1:
