@@ -45,8 +45,8 @@ __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, 
     general_copy(Dev_State, h_state, DIM_X);
     for(int i = 0; i < NUM_OF_HORIZON; i++){
         for(int k = 0; k < DIM_U; k++){
-            U_dev[k][i] = dvc[dvc[0].Best_ID].u[k][i];
-            Input_here[k] = generate_u1(id, devSt, U_dev[k][i], st_dev[k]);
+            // U_dev[k][i] = dvc[blockIdx.x].u[k][i];
+            Input_here[k] = generate_u1(id, devSt, dvc[blockIdx.x].u[k][i], st_dev[k]);
             Input_here[k] = input_saturation(Input_here[k], input_constraint, k);
             U_dev[k][i] = Input_here[k]; //入力を生成する関数はここ（同じファイル）に記述しないと機能しない
         }
@@ -56,7 +56,7 @@ __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, 
         euler_integrator_in_thread(Dev_State, dev_Diff_State, gpu_info.RATE_OF_CYCLE);
         Cost += get_stage_cost(Dev_State ,dev_Diff_State, Input_here, d_Q, d_R, output_constraint);
     }
-    //printf("ID:%d Cost:%f\n",id, Cost);
+    //printf("ID:%d INP: %f Cost:%f, State[0]: %f\n",id, Input_here[0], Cost, d_R[0]);
     float exp_COST, S;
     S = Cost / gpu_info.LAMBDA;
     exp_COST  = expf(-S);
@@ -79,7 +79,7 @@ __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, 
                 dvc[blockIdx.x].u[k][i] = U_dev[k][i];
             }
         }
-	printf("ID: %d Value: %f Mean: %f\n", id, U_dev[0][0], InpSeq[0].u[0]);
+	// printf("ID: %d Value: %f Mean: %f Cost:%f\n", id, U_dev[0][0], dvc[blockIdx.x].u[0][0], thread_COST[NO1]);
         //dvc[blockIdx.x] = in_block;
     }
 } 
@@ -143,8 +143,8 @@ void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info
                 printf("The value of <PREDICTIVE_METHOD> in headerfile you created is invalid\n");
                 break;
         }
-        printf("Values From Function: %f CostFrom: %f  TOP_Input: %f\n", hst[10].u[0][0], hst[10].L, InpSeq[0].u[0]);
+        //printf("Values From Function: %f CostFrom: %f  TOP_Input: %f\n", hst[10].u[0][0], hst[10].L, InpSeq[0].u[0]);
     }
     //hst[10].u[0][10] = 1.0;
-    //printf("Values From Function: %f\n", InpSeq[0].u[0]);
+    printf("Values From Function: %f\n", InpSeq[0].u[0]);
 }

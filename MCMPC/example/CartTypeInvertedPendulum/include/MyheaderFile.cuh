@@ -9,7 +9,7 @@
 
 const int NUM_OF_BLOCKS     = 100;
 //#define NUM_OF_BLOCKS 100
-const int NUM_OF_THREAD_PER_BLOCKS = 100;
+const int NUM_OF_THREAD_PER_BLOCKS = 10;
 const int NUM_OF_HORIZON           = 100;
 const int NUM_OF_ITERATIONS        = 10;
 
@@ -51,7 +51,7 @@ const float initial_diff_state[DIM_X] = {0.0f, 0.0f, 0.0f, 0.0f};
 #define NUM_OF_I_CONSTRAINT 2
 #define NUM_OF_S_CONSTRAINT 2
 
-const float constraint_for_input[NUM_OF_I_CONSTRAINT] = {-1.0f, 1.0};
-const float constraint_for_state[NUM_OF_S_CONSTRAINT] = {-0.45f, 0.45f};
+const float constraint_for_input[NUM_OF_I_CONSTRAINT] = {-1.5f, 1.5f};
+const float constraint_for_state[NUM_OF_S_CONSTRAINT] = {-0.5f, 0.5f};
 
 #endif
