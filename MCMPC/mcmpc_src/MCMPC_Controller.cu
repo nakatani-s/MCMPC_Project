@@ -45,7 +45,6 @@ __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, 
     general_copy(Dev_State, h_state, DIM_X);
     for(int i = 0; i < NUM_OF_HORIZON; i++){
         for(int k = 0; k < DIM_U; k++){
-            U_dev[k][i] = InpSeq[k].u[i];
             Input_here[k] = generate_u1(id, devSt, U_dev[k][i], st_dev[k]);
             Input_here[k] = input_saturation(Input_here[k], input_constraint, k);
             U_dev[k][i] = Input_here[k]; //入力を生成する関数はここ（同じファイル）に記述しないと機能しない
@@ -102,6 +101,8 @@ void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info
     cudaMemcpy(h_state, state, DIM_X*sizeof(float), cudaMemcpyHostToDevice); //状態量をデバイスで使用する変数にコピー
     
     float variance[DIM_U];
+    float *dptr = NULL;
+    cudaGetSymbolAddress((void**)&dptr, device_InpSeq);
     //variance = (float*)malloc(DIM_U * sizeof(float));
     //printf("Function: %f\n", hst[10].u[0][10]);
     /* Iterate Predction Process */
@@ -124,7 +125,7 @@ void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info
                 break;
                 
         }
-        cudaMemcpy(device_InpSeq, &InpSeq, DIM_U * sizeof(InputSequences),cudaMemcpyHostToDevice);
+        cudaMemcpy(dptr, &InpSeq, DIM_U * sizeof(InputSequences),cudaMemcpyHostToDevice);
         cudaMemcpyToSymbol(st_dev, &variance, DIM_U*sizeof(float));
         MCMPC_GPU<<<gpu_info.NUM_BLOCKS,gpu_info.TH_PER_BLS>>>(h_state, gpu_info, se, dvc, variance, device_InpSeq);
         cudaMemcpy(hst, dvc, gpu_info.NUM_BLOCKS * sizeof(DataMessanger),cudaMemcpyDeviceToHost); //ここでコピーしても記述されない
