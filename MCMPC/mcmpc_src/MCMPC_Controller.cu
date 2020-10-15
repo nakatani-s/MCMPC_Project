@@ -126,7 +126,7 @@ void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info
                 break;
                 
         }
-        cudaMemcpy(dptr, &InpSeq, DIM_U * sizeof(InputSequences),cudaMemcpyHostToDevice);
+        cudaMemcpy(dptr, InpSeq, DIM_U * sizeof(InputSequences),cudaMemcpyHostToDevice);
         cudaMemcpyToSymbol(st_dev, &variance, DIM_U*sizeof(float));
         MCMPC_GPU<<<gpu_info.NUM_BLOCKS,gpu_info.TH_PER_BLS>>>(h_state, gpu_info, se, dvc, variance, device_InpSeq);
         cudaMemcpy(hst, dvc, gpu_info.NUM_BLOCKS * sizeof(DataMessanger),cudaMemcpyDeviceToHost); //ここでコピーしても記述されない
@@ -142,7 +142,7 @@ void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info
                 printf("The value of <PREDICTIVE_METHOD> in headerfile you created is invalid\n");
                 break;
         }
-        //printf("Values From Function: %f CostFrom: %f  TOP_Input: %f\n", hst[10].u[0][0], hst[10].L, InpSeq[0].u[0]);
+        printf("Values From Function: %f CostFrom: %f  TOP_Input: %f\n", hst[10].u[0][0], hst[10].L, InpSeq[0].u[0]);
     }
     //hst[10].u[0][10] = 1.0;
     //printf("Values From Function: %f\n", InpSeq[0].u[0]);
