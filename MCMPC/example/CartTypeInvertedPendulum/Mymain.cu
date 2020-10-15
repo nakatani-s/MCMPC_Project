@@ -52,7 +52,7 @@ int main(int argc, char **argv){
     
     printf("|--------Start Simulation Loop--------|");
     printf("InitValues : %f\n",host_[10].u[1][10]);
-    for(int i = 0; i < 100; i++){
+    for(int i = 0; i < 500; i++){
         
         MCMPC_Controller(State, _controller, get_info, get_param, host_, device_, Input_Seq, seedMaker);
         cudaMemcpy(host_, device_, NUM_OF_BLOCKS*sizeof(DataMessanger),cudaMemcpyDeviceToHost);
