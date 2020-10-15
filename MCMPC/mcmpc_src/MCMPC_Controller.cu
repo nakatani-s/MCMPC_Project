@@ -45,7 +45,7 @@ __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, 
     general_copy(Dev_State, h_state, DIM_X);
     for(int i = 0; i < NUM_OF_HORIZON; i++){
         for(int k = 0; k < DIM_U; k++){
-            U_dev[k][i] = InpSeq[k].u[i];
+            U_dev[k][i] = dvc[dvc[0].Best_ID].u[k][i];
             Input_here[k] = generate_u1(id, devSt, U_dev[k][i], st_dev[k]);
             Input_here[k] = input_saturation(Input_here[k], input_constraint, k);
             U_dev[k][i] = Input_here[k]; //入力を生成する関数はここ（同じファイル）に記述しないと機能しない
@@ -126,12 +126,12 @@ void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info
                 break;
                 
         }
-        cudaMemcpy(dptr, InpSeq, DIM_U * sizeof(InputSequences),cudaMemcpyHostToDevice);
+        //cudaMemcpy(dptr, InpSeq, DIM_U * sizeof(InputSequences),cudaMemcpyHostToDevice);
         cudaMemcpyToSymbol(st_dev, &variance, DIM_U*sizeof(float));
         MCMPC_GPU<<<gpu_info.NUM_BLOCKS,gpu_info.TH_PER_BLS>>>(h_state, gpu_info, se, dvc, variance, device_InpSeq);
         cudaDeviceSynchronize();
         cudaMemcpy(hst, dvc, gpu_info.NUM_BLOCKS * sizeof(DataMessanger),cudaMemcpyDeviceToHost); //ここでコピーしても記述されない
-
+        cudaMemcpy(dvc, hst, gpu_info.NUM_BLOCKS * sizeof(DataMessanger),cudaMemcpyHostToDevice);
         switch(PREDICTIVE_METHOD){
             case 1:
                 TOP1_sample_method(hst, gpu_info, InpSeq);
