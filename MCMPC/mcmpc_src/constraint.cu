@@ -14,7 +14,7 @@ __host__ __device__ float state_constraint_barrier(float st, float min, float ma
                     add += FLT_MAX;
                 }
             }else{
-                add += 1/(10*powf(10*(min - st),2));
+                add += 1/(powf(10*(st - min),2));
                 if(st < min){
                     add += FLT_MAX;
                 }
