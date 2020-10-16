@@ -46,7 +46,7 @@ __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, 
     for(int i = 0; i < NUM_OF_HORIZON; i++){
         for(int k = 0; k < DIM_U; k++){
             // U_dev[k][i] = dvc[blockIdx.x].u[k][i];
-            Input_here[k] = generate_u1(id, devSt, dvc[blockIdx.x].u[k][i], st_dev[k]);
+            Input_here[k] = generate_u1(id, devSt, InpSeq[k].u[i], st_dev[k]);
             Input_here[k] = input_saturation(Input_here[k], input_constraint, k);
             U_dev[k][i] = Input_here[k]; //入力を生成する関数はここ（同じファイル）に記述しないと機能しない
         }
@@ -79,7 +79,7 @@ __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, 
                 dvc[blockIdx.x].u[k][i] = U_dev[k][i];
             }
         }
-	// printf("ID: %d Value: %f Mean: %f Cost:%f\n", id, U_dev[0][0], dvc[blockIdx.x].u[0][0], thread_COST[NO1]);
+	 printf("ID: %d Value: %f Mean: %f Cost:%f\n", id, U_dev[0][0], InpSeq[0].u[0], thread_COST[NO1]);
         //dvc[blockIdx.x] = in_block;
     }
 } 
@@ -127,6 +127,7 @@ void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info
                 
         }
         //cudaMemcpy(dptr, InpSeq, DIM_U * sizeof(InputSequences),cudaMemcpyHostToDevice);
+        copy_input_sequences(InpSeq, device_InpSeq, gpu_info);
         cudaMemcpyToSymbol(st_dev, &variance, DIM_U*sizeof(float));
         MCMPC_GPU<<<gpu_info.NUM_BLOCKS,gpu_info.TH_PER_BLS>>>(h_state, gpu_info, se, dvc, variance, device_InpSeq);
         cudaDeviceSynchronize();

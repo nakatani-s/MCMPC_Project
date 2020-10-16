@@ -21,6 +21,14 @@ void copy_input_sequences(DataMessanger *hst, InputSequences *InpSeq, SpecGPU in
     }
 }
 
+void copy_input_sequences(InputSequences *before, InputSequences *after, SpecGPU info){
+    for(int i = 0; i < info.NUM_PRED_STEPS; i++ ){
+        for(int k = 0; k < DIM_U; k++ ){
+            after[k].u[i] = before[k].u[i];
+        }
+    }
+}
+
 void TOP1_sample_method(DataMessanger *hst,SpecGPU gpu_info, InputSequences *InpSeq){
     int bestID;
     bestID = search_best_ID( hst, gpu_info);

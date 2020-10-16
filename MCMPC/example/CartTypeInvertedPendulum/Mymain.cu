@@ -34,7 +34,7 @@ int main(int argc, char **argv){
     get_param.NUM_CYCLES = 0;
     printf("hoge\n");
     InputSequences *device_InpSeq;
-    cudaMalloc((void**)&device_InpSeq, DIM_U * sizeof(InputSequences));
+    cudaMallocManaged((void**)&device_InpSeq, DIM_U * sizeof(InputSequences));
     float in_h_param[NUM_OF_SYS_PARAMETERS];
     for( int i = 0; i < NUM_OF_SYS_PARAMETERS; i++){
         in_h_param[i] = system_params[i];
