@@ -9,10 +9,10 @@ __device__ void general_copy(float *af, float *be, int dims){
 
 __device__ float input_saturation(float in, float *constraint, int k){
         float ret = in;
-        if( in <= constraint[k * DIM_U]){
+        if( in < constraint[k * DIM_U]){
             ret = constraint[k * DIM_U];
         }
-        if( constraint[k * DIM_U + 1] <= in){
+        if( constraint[k * DIM_U + 1] < in){
             ret = constraint[k * DIM_U +1];
         }
         return ret;

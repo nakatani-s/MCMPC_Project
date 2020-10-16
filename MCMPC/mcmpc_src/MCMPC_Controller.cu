@@ -39,6 +39,7 @@ __device__ float generate_u1(unsigned int id, curandState *state, float ave, flo
 
 __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, DataMessanger *dvc, float *var, InputSequences *InpSeq){
     unsigned int id = threadIdx.x + blockDim.x * blockIdx.x;
+    unsigned int random_id = id;
     float U_dev[DIM_U][NUM_OF_HORIZON], Input_here[DIM_U];
     float Dev_State[DIM_X], dev_Diff_State[DIM_X];
     float Cost = 0;
@@ -46,9 +47,13 @@ __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, 
     for(int i = 0; i < NUM_OF_HORIZON; i++){
         for(int k = 0; k < DIM_U; k++){
             // U_dev[k][i] = dvc[blockIdx.x].u[k][i];
-            Input_here[k] = generate_u1(id, devSt, InpSeq[k].u[i], st_dev[k]);
+            Input_here[k] = generate_u1(random_id, devSt, InpSeq[k].u[i], st_dev[k]);
+            random_id += k*DIM_U + i;
             Input_here[k] = input_saturation(Input_here[k], input_constraint, k);
             U_dev[k][i] = Input_here[k]; //入力を生成する関数はここ（同じファイル）に記述しないと機能しない
+            /*if(blockIdx.x == 1 && threadIdx.x == 1){
+                printf("RandamizedInput:%f Mean:%f\n", Input_here[k], InpSeq[k].u[i]);
+            }*/
         }
         // update predictive model by using random input
     
@@ -79,7 +84,7 @@ __global__ void MCMPC_GPU(float *h_state, SpecGPU gpu_info, curandState *devSt, 
                 dvc[blockIdx.x].u[k][i] = U_dev[k][i];
             }
         }
-	 printf("ID: %d Value: %f Mean: %f Cost:%f\n", id, U_dev[0][0], InpSeq[0].u[0], thread_COST[NO1]);
+	 //printf("ID: %d Value: %f Mean: %f Cost:%f\n", id, U_dev[0][0], InpSeq[0].u[0], thread_COST[NO1]);
         //dvc[blockIdx.x] = in_block;
     }
 } 
@@ -132,7 +137,6 @@ void MCMPC_Controller(float *state, ControllerInfo &info_cont , SpecGPU gpu_info
         MCMPC_GPU<<<gpu_info.NUM_BLOCKS,gpu_info.TH_PER_BLS>>>(h_state, gpu_info, se, dvc, variance, device_InpSeq);
         cudaDeviceSynchronize();
         cudaMemcpy(hst, dvc, gpu_info.NUM_BLOCKS * sizeof(DataMessanger),cudaMemcpyDeviceToHost); //ここでコピーしても記述されない
-        cudaMemcpy(dvc, hst, gpu_info.NUM_BLOCKS * sizeof(DataMessanger),cudaMemcpyHostToDevice);
         switch(PREDICTIVE_METHOD){
             case 1:
                 TOP1_sample_method(hst, gpu_info, InpSeq);

@@ -7,14 +7,14 @@
 #define DIM_X 4
 #define DIM_U 1
 
-const int NUM_OF_BLOCKS     = 100;
+const int NUM_OF_BLOCKS     = 50;
 //#define NUM_OF_BLOCKS 100
-const int NUM_OF_THREAD_PER_BLOCKS = 10;
+const int NUM_OF_THREAD_PER_BLOCKS = 50;
 const int NUM_OF_HORIZON           = 100;
 const int NUM_OF_ITERATIONS        = 10;
 
 const float CONTROL_CYCLE = 0.01;
-const float INITIAL_SIGMA[DIM_U] = { 1.0f };
+const float INITIAL_SIGMA[DIM_U] = { 1.2f };
 const float Clambda  = 100; // We recommend a constant multiple of horizon
 
 #define PREDICTIVE_METHOD 1 // <-----choose 1 or 2 as Predictive method (1 -> TOP1_sample, 2 -> Elite sample )
@@ -51,7 +51,7 @@ const float initial_diff_state[DIM_X] = {0.0f, 0.0f, 0.0f, 0.0f};
 #define NUM_OF_I_CONSTRAINT 2
 #define NUM_OF_S_CONSTRAINT 2
 
-const float constraint_for_input[NUM_OF_I_CONSTRAINT] = {-1.5f, 1.5f};
+const float constraint_for_input[NUM_OF_I_CONSTRAINT] = {-1.0f, 1.0f};
 const float constraint_for_state[NUM_OF_S_CONSTRAINT] = {-0.5f, 0.5f};
 
 #endif

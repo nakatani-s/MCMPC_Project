@@ -68,7 +68,7 @@ __host__ __device__ float get_stage_cost(float *state, float *diff_state, float 
     re += state[3] * state[3] * q[3]; // dth * dth * Q44
     re += input[0] * input[0] * r[0]; // u * u * R
 
-    //re += state_constraint_barrier(state[0], state_constraint[0], state_constraint[1], 1);
+    re += state_constraint_barrier(state[0], state_constraint[0], state_constraint[1], 1);
     // state_constraint_barrier1(state);
     return re;
 
